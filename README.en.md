@@ -10,43 +10,55 @@ This repository is a central index where creators, developers, and the community
 
 ## 🧩 How It Works
 
-Plugins extend the visual MyBot studio canvas with **custom nodes**, admin panels, payment gateways, analytics tools, and external API connectors.
+Plugins extend the visual MyBot studio canvas with **custom node families**, admin toolkits, payment gateways, analytics, and external API connectors.
 
-A plugin is a self-contained folder containing:
-1. `plugin.json` — metadata (name, version, author, description, category, inputs/outputs, UI hooks).
-2. Backend handlers (FastAPI router / DAG node execution logic).
-3. Frontend components (React canvas node or dashboard extension).
+A plugin is a self-contained folder under `plugins/<category>/<key>/` containing:
 
-```
-plugins/
-├── my-awesome-plugin/
-│   ├── plugin.json
-│   ├── __init__.py
-│   ├── node.py
-│   └── README.md
-```
+1. `manifest.json` — metadata the panel's plugin scanner reads (see the schema below).
+2. Backend Python (a DAG node family or a toolkit the engine can import).
+3. Optional dashboard/canvas metadata for the panel.
 
-### Manifest Example (`plugin.json`)
+> ⚠️ **The manifest filename is `manifest.json`, not `plugin.json`.** The engine's
+> discovery routine (`discover_installed_plugins()` in `backend/app/api/plugins.py`)
+> scans each plugin folder for a `manifest.json` and reads the fields listed below.
+> A folder with any other manifest name or the old `id`/`entrypoint`/`category`
+> schema will **not** appear in the panel's Plugins list.
+
+### Manifest Schema (`manifest.json`)
 
 ```json
 {
-  "id": "my_weather_node",
+  "key": "live_weather",
   "name": "Live Weather Provider",
+  "name_fa": "ارائهدهنده آبوهوای زنده",
+  "description": "Adds a canvas node that fetches real-time weather for the user's location.",
+  "description_fa": "افزودن نودی که آبوهوای لحظه‌ای بر اساس موقعیت کاربر را دریافت می‌کند.",
   "version": "1.0.0",
   "author": "YourName",
-  "category": "services",
-  "description": "Fetches real-time weather forecasts based on user location.",
-  "type": "canvas_node",
-  "entrypoint": "node.py",
-  "license": "AGPL-3.0"
+  "type": "toolkit",
+  "icon": "Cloud"
 }
 ```
+
+Field reference (what `discover_installed_plugins()` actually reads):
+
+| Field | Required | Notes |
+|---|---|---|
+| `key` | yes | Unique snake_case identifier; falls back to the folder name if missing. |
+| `name` | no | Display name (English default). |
+| `name_fa` | no | Persian display name. |
+| `description` | no | English description. |
+| `description_fa` | no | Persian description. |
+| `version` | no | Defaults to `1.0.0` when absent. |
+| `author` | no | Defaults to `MyBot Community`. |
+| `type` | no | `toolkit` (default) or `admin`. |
+| `icon` | no | Lucide icon name; defaults to `Puzzle`. |
 
 ---
 
 ## 📁 Folder Structure
 
-Plugins are organized by category (see `categories.json` as the single source of truth):
+Plugins are organized by category (`categories.json` is the single source of truth):
 
 | Folder | Category | Examples |
 |---|---|---|
@@ -63,7 +75,7 @@ Plugins are organized by category (see `categories.json` as the single source of
 
 To keep the ecosystem reliable and transparent:
 
-1. **Pull Request Submissions**: to add a plugin, create a folder under `plugins/<plugin-id>/` and submit a PR with clear documentation, a valid configuration schema, and tests.
+1. **Pull Request Submissions**: to add a plugin, create a folder under `plugins/<category>/<key>/` with a valid `manifest.json` and submit a PR with clear documentation and tests.
 
 2. **Open Source & Non-Commercial**: all plugins hosted here are **free and open-source** under GNU AGPL-3.0 (or a compatible OSI license). **Commercial, paid, or proprietary** plugins are **not accepted** in this public index. Authors who wish to distribute commercial extensions or monetize their work must run their own service, platform, or website.
 
@@ -72,6 +84,8 @@ To keep the ecosystem reliable and transparent:
 4. **Security & Quality Standards**:
    - No obfuscated, encrypted, or remote-executable bytecode (beyond permitted server-side APIs).
    - No telemetry, unauthorized data scraping, token exfiltration, or backdoors. Every PR is reviewed by automated security analysis and code review.
+
+5. **No hardcoded language**: a plugin that ships user-facing copy keeps it bilingual (`name`/`description` + `name_fa`/`description_fa`) in the manifest, mirroring the MyBot Studio engine's i18n contract. See `AGENTS.md`.
 
 ---
 
