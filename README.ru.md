@@ -13,34 +13,36 @@
 Плагины расширяют визуальный холст MyBot **кастомными узлами**, админ-панелями, платёжными шлюзами, инструментами аналитики и коннекторами внешних API.
 
 Плагин — самодостаточная папка:
-1. `plugin.json` — метаданные (название, версия, автор, описание, категория, входы/выходы, UI-хуки).
+1. `manifest.json` — метаданные (название, версия, автор, описание, категория, входы/выходы, UI-хуки).
 2. Бэкенд-обработчики (FastAPI-роутер / логика выполнения узла DAG).
 3. Фронтенд (React-узел холста или расширение дашборда).
 
 ```
 plugins/
 ├── my-awesome-plugin/
-│   ├── plugin.json
+│   ├── manifest.json
 │   ├── __init__.py
 │   ├── node.py
 │   └── README.md
 ```
 
-### Пример манифеста (`plugin.json`)
+### Пример манифеста (`manifest.json`)
 
 ```json
 {
-  "id": "my_weather_node",
+  "key": "live_weather",
   "name": "Live Weather Provider",
+  "name_fa": "ارائهدهنده آبوهوای زنده",
+  "description": "Adds a canvas node that fetches real-time weather for the user's location.",
+  "description_fa": "افزودن نودی که آبوهوای لحظه‌ای بر اساس موقعیت کاربر را دریافت می‌کند.",
   "version": "1.0.0",
   "author": "YourName",
-  "category": "services",
-  "description": "Fetches real-time weather forecasts based on user location.",
-  "type": "canvas_node",
-  "entrypoint": "node.py",
-  "license": "AGPL-3.0"
+  "type": "toolkit",
+  "icon": "Cloud"
 }
 ```
+
+Field reference (what `discover_installed_plugins()` reads): `key` (required; falls back to the folder name), `name`, `name_fa`, `description`, `description_fa`, `version`, `author`, `type` (`toolkit` default or `admin`), `icon` (Lucide icon, default `Puzzle`).
 
 ---
 
