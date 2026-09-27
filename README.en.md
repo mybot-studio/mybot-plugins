@@ -18,7 +18,7 @@ A plugin is a self-contained folder under `plugins/<category>/<key>/` containing
 2. Backend Python (a DAG node family or a toolkit the engine can import).
 3. Optional dashboard/canvas metadata for the panel.
 
-> ⚠️ **The manifest filename is `manifest.json`, not `plugin.json`.** The engine's
+> ⚠️ **The manifest filename is `manifest.json`, not `manifest.json`.** The engine's
 > discovery routine (`discover_installed_plugins()` in `backend/app/api/plugins.py`)
 > scans each plugin folder for a `manifest.json` and reads the fields listed below.
 > A folder with any other manifest name or the old `id`/`entrypoint`/`category`
