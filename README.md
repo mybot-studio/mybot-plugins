@@ -14,34 +14,36 @@
 
 هر پلاگین یک پوشه مستقل است که شامل:
 
-1. `plugin.json` — فراداده (نام، نسخه، نویسنده، توضیحات، دسته، ورودی/خروجی و قلاب‌های UI).
+1. `manifest.json` — فراداده (نام، نسخه، نویسنده، توضیحات، دسته، ورودی/خروجی و قلاب‌های UI).
 2. هندلرهای بک‌اند (روتر FastAPI / منطق اجرای نود DAG).
 3. کامپوننت‌های فرانت‌اند (نود بوم React یا اکستنشن داشبورد).
 
 ```
 plugins/
 ├── my-awesome-plugin/
-│   ├── plugin.json
+│   ├── manifest.json
 │   ├── __init__.py
 │   ├── node.py
 │   └── README.md
 ```
 
-### مثال‌ مانیفست (`plugin.json`)
+### مثال‌ مانیفست (`manifest.json`)
 
 ```json
 {
-  "id": "my_weather_node",
-  "name": "ارائه‌دهنده آب‌وهوای زنده",
+  "key": "live_weather",
+  "name": "Live Weather Provider",
+  "name_fa": "ارائهدهنده آبوهوای زنده",
+  "description": "Adds a canvas node that fetches real-time weather for the user's location.",
+  "description_fa": "افزودن نودی که آبوهوای لحظه‌ای بر اساس موقعیت کاربر را دریافت می‌کند.",
   "version": "1.0.0",
   "author": "YourName",
-  "category": "services",
-  "description": "دریافت پیش‌بینی آب‌وهوا بر اساس موقعیت کاربر.",
-  "type": "canvas_node",
-  "entrypoint": "node.py",
-  "license": "AGPL-3.0"
+  "type": "toolkit",
+  "icon": "Cloud"
 }
 ```
+
+Field reference (what `discover_installed_plugins()` reads): `key` (required; falls back to the folder name), `name`, `name_fa`, `description`, `description_fa`, `version`, `author`, `type` (`toolkit` default or `admin`), `icon` (Lucide icon, default `Puzzle`).
 
 ---
 
